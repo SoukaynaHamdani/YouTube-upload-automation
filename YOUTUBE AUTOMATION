@@ -1,0 +1,157 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [200, 300]
+    },
+    {
+      "parameters": {
+        "path": "/path/to/your/videos",
+        "recursive": false
+      },
+      "name": "Read Binary Files From Folder",
+      "type": "n8n-nodes-base.readBinaryFilesFromFolder",
+      "typeVersion": 1,
+      "position": [400, 300]
+    },
+    {
+      "parameters": {
+        "title": "My Playlist",
+        "options": {}
+      },
+      "name": "Create Playlist",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [600, 300],
+      "credentials": {
+        "youTubeOAuth2Api": "google-youtube"
+      }
+    },
+    {
+      "parameters": {},
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 1,
+      "position": [800, 300],
+      "notesInFlow": true,
+      "notes": "Splits the videos to process one at a time",
+      "settings": {
+        "batchSize": 1
+      }
+    },
+    {
+      "parameters": {
+        "title": "={{$json[\"fileName\"]}}",
+        "resource": "video",
+        "operation": "upload",
+        "categoryId": "28",
+        "regionCode": "IN",
+        "binaryProperty": "data"
+      },
+      "name": "Upload Video",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [1000, 300],
+      "credentials": {
+        "youTubeOAuth2Api": "google-youtube"
+      }
+    },
+    {
+      "parameters": {
+        "playlistId": "={{$node[\"Create Playlist\"].json[\"id\"]}}",
+        "videoId": "={{$json[\"id\"]}}",
+        "resource": "playlistItem",
+        "operation": "create",
+        "options": {}
+      },
+      "name": "Add Video to Playlist",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [1200, 300],
+      "credentials": {
+        "youTubeOAuth2Api": "google-youtube"
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Read Binary Files From Folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Binary Files From Folder": {
+      "main": [
+        [
+          {
+            "node": "Create Playlist",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Playlist": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Upload Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload Video": {
+      "main": [
+        [
+          {
+            "node": "Add Video to Playlist",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Add Video to Playlist": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  }
+}
