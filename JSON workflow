@@ -1,4 +1,4 @@
-  {
+ {
   "nodes": [
     {
       "parameters": {},
@@ -54,7 +54,7 @@
     {
       "parameters": {
         "operation": "add",
-        "playlistId": "={{$node['Create Playlist'].json.id}}",
+        "playlistId": "={{$node["Create Playlist"].json.id}}",
         "videoId": "={{$json.id}}"
       },
       "id": "AddToPlaylist",
@@ -106,5 +106,17 @@
         ]
       ]
     }
-  }
+  },
+  "id": "d604c456-e899-4867-8c34-daf5657750e9",
+  "name": "My Workflow 2",
+  "active": false,
+  "settings": {},
+  "staticData": null,
+  "meta": {
+    "instanceId": ""
+  },
+  "versionId": "",
+  "triggerCount": 0,
+  "createdAt": "2025-07-26T00:00:00.000Z",
+  "updatedAt": "2025-07-26T00:00:00.000Z"
 }
