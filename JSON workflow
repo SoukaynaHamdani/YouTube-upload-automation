@@ -31,7 +31,7 @@
       "typeVersion": 1,
       "position": [650, 100],
       "credentials": {
-        "youtubeOAuth2Api": "Your Google OAuth Credentials"
+        "youtubeOAuth2Api": "YouTube OAuth2 API"
       }
     },
     {
@@ -48,7 +48,7 @@
       "typeVersion": 1,
       "position": [850, 250],
       "credentials": {
-        "youtubeOAuth2Api": "Your Google OAuth Credentials"
+        "youtubeOAuth2Api": "YouTube OAuth2 API"
       }
     },
     {
@@ -63,7 +63,7 @@
       "typeVersion": 1,
       "position": [1050, 250],
       "credentials": {
-        "youtubeOAuth2Api": "Your Google OAuth Credentials"
+        "youtubeOAuth2Api": "YouTube OAuth2 API"
       }
     }
   ],
