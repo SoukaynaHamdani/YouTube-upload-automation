@@ -1,121 +1,90 @@
-{
+  {
   "nodes": [
     {
       "parameters": {},
-      "name": "Manual Trigger",
+      "id": "ManualTrigger",
+      "name": "Start",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [200, 300]
+      "position": [250, 250]
     },
     {
       "parameters": {
-        "path": "/path/to/your/videos",
-        "recursive": false
+        "path": "/home/soukaynaham/Videos/test",
+        "binaryPropertyName": "data"
       },
-      "name": "Read Binary Files From Folder",
-      "type": "n8n-nodes-base.readBinaryFilesFromFolder",
+      "id": "ReadVideo",
+      "name": "Read Video",
+      "type": "n8n-nodes-base.readBinaryFiles",
       "typeVersion": 1,
-      "position": [400, 300]
+      "position": [450, 250]
     },
     {
       "parameters": {
-        "title": "My Playlist",
-        "options": {}
-      },
-      "name": "Create Playlist",
-      "type": "n8n-nodes-base.youTube",
-      "typeVersion": 1,
-      "position": [600, 300],
-      "credentials": {
-        "youTubeOAuth2Api": "google-youtube"
-      }
-    },
-    {
-      "parameters": {},
-      "name": "SplitInBatches",
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 1,
-      "position": [800, 300],
-      "notesInFlow": true,
-      "notes": "Splits the videos to process one at a time",
-      "settings": {
-        "batchSize": 1
-      }
-    },
-    {
-      "parameters": {
-        "title": "={{$json[\"fileName\"]}}",
-        "resource": "video",
-        "operation": "upload",
-        "categoryId": "28",
-        "regionCode": "IN",
-        "binaryProperty": "data"
-      },
-      "name": "Upload Video",
-      "type": "n8n-nodes-base.youTube",
-      "typeVersion": 1,
-      "position": [1000, 300],
-      "credentials": {
-        "youTubeOAuth2Api": "google-youtube"
-      }
-    },
-    {
-      "parameters": {
-        "playlistId": "={{$node[\"Create Playlist\"].json[\"id\"]}}",
-        "videoId": "={{$json[\"id\"]}}",
-        "resource": "playlistItem",
         "operation": "create",
-        "options": {}
+        "title": "My Playlist Test",
+        "privacyStatus": "private"
       },
-      "name": "Add Video to Playlist",
-      "type": "n8n-nodes-base.youTube",
+      "id": "CreatePlaylist",
+      "name": "Create Playlist",
+      "type": "n8n-nodes-base.youtube",
       "typeVersion": 1,
-      "position": [1200, 300],
+      "position": [650, 100],
       "credentials": {
-        "youTubeOAuth2Api": "google-youtube"
+        "youtubeOAuth2Api": "Your Google OAuth Credentials"
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "binaryPropertyName": "data",
+        "title": "={{$binary.data.fileName}}",
+        "description": "Uploaded via n8n",
+        "privacyStatus": "private"
+      },
+      "id": "UploadVideo",
+      "name": "Upload Video",
+      "type": "n8n-nodes-base.youtube",
+      "typeVersion": 1,
+      "position": [850, 250],
+      "credentials": {
+        "youtubeOAuth2Api": "Your Google OAuth Credentials"
+      }
+    },
+    {
+      "parameters": {
+        "operation": "add",
+        "playlistId": "={{$node['Create Playlist'].json.id}}",
+        "videoId": "={{$json.id}}"
+      },
+      "id": "AddToPlaylist",
+      "name": "Add to Playlist",
+      "type": "n8n-nodes-base.youtube",
+      "typeVersion": 1,
+      "position": [1050, 250],
+      "credentials": {
+        "youtubeOAuth2Api": "Your Google OAuth Credentials"
       }
     }
   ],
   "connections": {
-    "Manual Trigger": {
+    "Start": {
       "main": [
         [
           {
-            "node": "Read Binary Files From Folder",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Read Binary Files From Folder": {
-      "main": [
-        [
-          {
-            "node": "Create Playlist",
+            "node": "Read Video",
             "type": "main",
             "index": 0
           },
           {
-            "node": "SplitInBatches",
+            "node": "Create Playlist",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Create Playlist": {
-      "main": [
-        [
-          {
-            "node": "SplitInBatches",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "SplitInBatches": {
+    "Read Video": {
       "main": [
         [
           {
@@ -130,25 +99,9 @@
       "main": [
         [
           {
-            "node": "Add Video to Playlist",
+            "node": "Add to Playlist",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "SplitInBatches",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Add Video to Playlist": {
-      "main": [
-        [
-          {
-            "node": "SplitInBatches",
-            "type": "main",
-            "index": 1
           }
         ]
       ]
